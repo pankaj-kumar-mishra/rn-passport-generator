@@ -1,8 +1,11 @@
+import { NavigationProp } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { FC } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import FA5Icon from "react-native-vector-icons/FontAwesome5";
 
 import { LargeIconButton } from "../components";
+import { AppStackParamList } from "../navigation/AppNavigator";
 import {
   selectAndCropImageFromCamera,
   selectAndCropImageFromDevice,
@@ -10,21 +13,40 @@ import {
 
 // file:///storage/emulated/0/Android/data/com.passportgenerator/files/Pictures/eba8ef39-e5f5-475f-be18-fb610d385f6b.jpg
 
-interface Props {}
+type HomeScreenNavigationProp = NativeStackNavigationProp<
+  AppStackParamList,
+  "Home"
+>;
 
-const Home: FC<Props> = (): JSX.Element => {
+interface Props {
+  // navigation: HomeScreenNavigationProp;
+  // NOTE we can also add entire navigation as type using "NavigationProp"
+  navigation: NavigationProp<AppStackParamList>;
+}
+
+const Home: FC<Props> = ({ navigation }): JSX.Element => {
+  const navigateToImageEditor = (imageUri: string) => {
+    navigation.navigate("ImageEditor", { imageUri });
+  };
+
   const handleImageCapture = async (): Promise<void> => {
     const { path, error } = await selectAndCropImageFromCamera();
     if (error) return console.log(error);
 
-    console.log(path);
+    // console.log(path);
+    // navigation.navigate("ImageEditor", { imageUri: path });
+
+    navigateToImageEditor(path);
   };
 
   const handleImageSelect = async (): Promise<void> => {
     const { path, error } = await selectAndCropImageFromDevice();
     if (error) return console.log(error);
 
-    console.log(path);
+    // console.log(path);
+    // navigation.navigate("ImageEditor", { imageUri: path });
+
+    navigateToImageEditor(path);
   };
 
   return (

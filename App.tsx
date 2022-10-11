@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
+import { AppNavigator } from "./src/navigation";
 import { Home } from "./src/screens";
 
 interface Props {
@@ -9,7 +10,7 @@ interface Props {
 const App: FC<Props> = (props): JSX.Element => {
   return (
     <SafeAreaView style={styles.container}>
-      <Home />
+      <AppNavigator />
     </SafeAreaView>
   );
 };
