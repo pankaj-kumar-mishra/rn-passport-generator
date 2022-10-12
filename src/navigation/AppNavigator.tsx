@@ -6,11 +6,12 @@ import {
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { Home, ImageEditor } from "../screens";
+import { Home, ImageEditor, NMdemo } from "../screens";
 
 export type AppStackParamList = {
   Home: undefined;
   ImageEditor: { imageUri: string };
+  NMdemo: undefined;
 
   //   Home: undefined;
   //   Profile: { userId: string };
@@ -33,11 +34,12 @@ const AppNavigator: FC<Props> = (): JSX.Element => {
   return (
     <NavigationContainer theme={CUSTOM_THEME}>
       <Stack.Navigator
-        initialRouteName="Home"
+        initialRouteName="NMdemo"
         screenOptions={{ headerShown: false }}
       >
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="ImageEditor" component={ImageEditor} />
+        <Stack.Screen name="NMdemo" component={NMdemo} />
       </Stack.Navigator>
     </NavigationContainer>
   );
