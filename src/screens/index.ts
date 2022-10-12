@@ -1,5 +1,5 @@
 import Home from "./Home";
 import ImageEditor from "./ImageEditor";
-import Temp from "./Temp";
+import NMdemo from "./NMdemo";
 
-export { Home, Temp, ImageEditor };
+export { Home, ImageEditor, NMdemo };
