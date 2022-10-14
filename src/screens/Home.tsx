@@ -26,6 +26,7 @@ interface Props {
 
 const Home: FC<Props> = ({ navigation }): JSX.Element => {
   const navigateToImageEditor = (imageUri: string) => {
+    // navigation.navigate("ImageEditorBugFix", { imageUri });
     navigation.navigate("ImageEditor", { imageUri });
   };
 

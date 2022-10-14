@@ -4,12 +4,14 @@ import {
   NavigationContainer,
   Theme,
 } from "@react-navigation/native";
+// import { createStackNavigator } from "@react-navigation/stack";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { Home, ImageEditor, NMdemo } from "../screens";
+import { Home, ImageEditor, ImageEditorBugFix, NMdemo } from "../screens";
 
 export type AppStackParamList = {
   Home: undefined;
+  ImageEditorBugFix: { imageUri: string };
   ImageEditor: { imageUri: string };
   NMdemo: undefined;
 
@@ -18,6 +20,7 @@ export type AppStackParamList = {
   //   Feed: { sort: 'latest' | 'top' } | undefined;
 };
 
+// const Stack = createStackNavigator<AppStackParamList>();
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
 interface Props {}
@@ -34,10 +37,11 @@ const AppNavigator: FC<Props> = (): JSX.Element => {
   return (
     <NavigationContainer theme={CUSTOM_THEME}>
       <Stack.Navigator
-        initialRouteName="NMdemo"
+        initialRouteName="Home"
         screenOptions={{ headerShown: false }}
       >
         <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="ImageEditorBugFix" component={ImageEditorBugFix} />
         <Stack.Screen name="ImageEditor" component={ImageEditor} />
         <Stack.Screen name="NMdemo" component={NMdemo} />
       </Stack.Navigator>

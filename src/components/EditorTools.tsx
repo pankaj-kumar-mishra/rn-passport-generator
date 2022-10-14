@@ -6,13 +6,23 @@ import FA5Icon from "react-native-vector-icons/FontAwesome5";
 import SelectorButton from "./SelectorButton";
 
 interface Props {
+  fileSize: number;
+  compressValue: number;
+  compressedPercentage: number;
   onSelectAnother?: () => void;
   onCaptureAnother?: () => void;
+  onSliderChange?: (value: number) => void;
+  onSlidingComplete?: (value: number) => void;
 }
 
 const EditorTools: FC<Props> = ({
+  fileSize,
+  compressValue,
+  compressedPercentage,
   onSelectAnother,
   onCaptureAnother,
+  onSliderChange,
+  onSlidingComplete,
 }): JSX.Element => {
   return (
     <View style={styles.container}>
@@ -25,14 +35,21 @@ const EditorTools: FC<Props> = ({
         </SelectorButton>
       </View>
       <View style={styles.infoContainer}>
-        <Text style={styles.infoText}>Compressed to: 50%</Text>
-        <Text style={styles.infoText}>Image size: 50KB</Text>
+        <Text style={styles.infoText}>
+          Compressed to: {compressedPercentage}%
+        </Text>
+        <Text style={styles.infoText}>Image size: {fileSize}KB</Text>
       </View>
       <View style={styles.sliderContainer}>
         <Slider
           maximumTrackTintColor="rgba(108,154,222, .8)"
           minimumTrackTintColor="rgb(108,154,222)"
           thumbTintColor="rgb(108,154,222)"
+          minimumValue={0.1}
+          maximumValue={1}
+          value={compressValue}
+          onValueChange={onSliderChange}
+          onSlidingComplete={onSlidingComplete}
         />
       </View>
     </View>

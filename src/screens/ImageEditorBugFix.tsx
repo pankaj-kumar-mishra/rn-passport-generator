@@ -1,6 +1,6 @@
 import { RouteProp, NavigationProp, EventArg } from "@react-navigation/native";
 import { FC, useEffect, useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View } from "react-native";
 import {
   Background,
   ConfirmModal,
@@ -15,14 +15,14 @@ import {
 } from "../utils/imageCapture";
 
 interface Props {
-  route: RouteProp<AppStackParamList, "ImageEditor">;
-  navigation: NavigationProp<AppStackParamList, "ImageEditor">;
+  route: RouteProp<AppStackParamList, "ImageEditorBugFix">;
+  navigation: NavigationProp<AppStackParamList, "ImageEditorBugFix">;
 }
 
 const imageUri =
   "file:///storage/emulated/0/Android/data/com.passportgenerator/files/Pictures/eba8ef39-e5f5-475f-be18-fb610d385f6b.jpg";
 
-const ImageEditor: FC<Props> = ({ route, navigation }): JSX.Element => {
+const ImageEditorBugFix: FC<Props> = ({ route, navigation }): JSX.Element => {
   // const { imageUri } = route.params;
   const [selectedImage, setSelectedImage] = useState(imageUri);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -92,6 +92,7 @@ const ImageEditor: FC<Props> = ({ route, navigation }): JSX.Element => {
       <EditorTools
         onSelectAnother={handleImageSelectAnother}
         onCaptureAnother={handleImageCaptureAnother}
+        fileSize={100}
       />
 
       <ConfirmModal
@@ -117,4 +118,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ImageEditor;
+export default ImageEditorBugFix;
