@@ -1,11 +1,12 @@
 import { RouteProp, NavigationProp, EventArg } from "@react-navigation/native";
 import { FC, useEffect, useState, useRef } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View } from "react-native";
 import {
   Background,
   ConfirmModal,
   EditorTools,
   Header,
+  ImageLoader,
   SelectedImage,
 } from "../components";
 import { AppStackParamList } from "../navigation/AppNavigator";
@@ -31,12 +32,16 @@ const ImageEditor: FC<Props> = ({ route, navigation }): JSX.Element => {
   // console.log(imageUri);
   // BUG  Unable to handle typescript error
   const backActionRef = useRef<any>();
+
   const [selectedImage, setSelectedImage] = useState(imageUri);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [fileSize, setFileSize] = useState(0);
+
   const [compressValue, setCompressValue] = useState(1);
   const [compressedPercentage, setCompressedPercentage] = useState(100);
   const [compressedImage, setCompressedImage] = useState<string | null>(null);
+
+  const [loading, setLoading] = useState(false);
 
   const getImageUriSize = async () => {
     try {
@@ -50,6 +55,7 @@ const ImageEditor: FC<Props> = ({ route, navigation }): JSX.Element => {
   };
 
   const handleImageCompress = async (value: number) => {
+    setLoading(true);
     const compressValue = Math.floor(value * 100);
     const uri = selectedImage.split(imagePrefix)[1];
     const result = await fsModule.compressImage(uri, compressValue);
@@ -57,6 +63,10 @@ const ImageEditor: FC<Props> = ({ route, navigation }): JSX.Element => {
     setCompressedPercentage(Math.round(value * 100));
     setFileSize(convertSizeToKB(result.size));
     setCompressedImage(imagePrefix + result.uri);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 600);
   };
 
   const handleSlidingComplete = (value: number) => {
@@ -118,7 +128,9 @@ const ImageEditor: FC<Props> = ({ route, navigation }): JSX.Element => {
       <Background />
       <Header />
       <View style={styles.imageContainer}>
-        <SelectedImage uri={compressedImage || selectedImage} />
+        <SelectedImage uri={compressedImage || selectedImage}>
+          {loading && <ImageLoader />}
+        </SelectedImage>
       </View>
       <EditorTools
         fileSize={fileSize}

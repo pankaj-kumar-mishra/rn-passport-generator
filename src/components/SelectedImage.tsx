@@ -1,14 +1,15 @@
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 
 interface Props {
   uri: string;
+  children?: ReactNode;
 }
 
-const SelectedImage: FC<Props> = ({ uri }): JSX.Element => {
+const SelectedImage: FC<Props> = ({ uri, children }): JSX.Element => {
   return (
     <View style={styles.container}>
-      <Image source={{ uri }} style={styles.image} />
+      {children || <Image source={{ uri }} style={styles.image} />}
     </View>
   );
 };
