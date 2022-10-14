@@ -4,16 +4,18 @@ import { StyleSheet, View } from "react-native";
 import UtilityButtons from "../UtilityButtons";
 import { AppStackParamList } from "../../navigation/AppNavigator";
 
-interface Props {}
+interface Props {
+  onSavePress: () => void;
+}
 
-const Header: FC<Props> = (): JSX.Element => {
+const Header: FC<Props> = ({ onSavePress }): JSX.Element => {
   //   const navigation = useNavigation();
   const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
   return (
     <View style={styles.container}>
       <UtilityButtons.Back onPress={navigation.goBack} />
-      <UtilityButtons.Save onPress={() => console.log("Save Clicked")} />
+      <UtilityButtons.Save onPress={onSavePress} />
     </View>
   );
 };

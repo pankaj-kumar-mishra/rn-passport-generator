@@ -4,6 +4,7 @@ import { StyleSheet, View } from "react-native";
 import {
   Background,
   ConfirmModal,
+  DoneLoader,
   EditorTools,
   Header,
   ImageLoader,
@@ -39,9 +40,10 @@ const ImageEditor: FC<Props> = ({ route, navigation }): JSX.Element => {
 
   const [compressValue, setCompressValue] = useState(1);
   const [compressedPercentage, setCompressedPercentage] = useState(100);
-  const [compressedImage, setCompressedImage] = useState<string | null>(null);
+  const [compressedImage, setCompressedImage] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
 
   const getImageUriSize = async () => {
     try {
@@ -56,9 +58,9 @@ const ImageEditor: FC<Props> = ({ route, navigation }): JSX.Element => {
 
   const handleImageCompress = async (value: number) => {
     setLoading(true);
-    const compressValue = Math.floor(value * 100);
+    const tempCompressValue = Math.floor(value * 100);
     const uri = selectedImage.split(imagePrefix)[1];
-    const result = await fsModule.compressImage(uri, compressValue);
+    const result = await fsModule.compressImage(uri, tempCompressValue);
     // console.log(result);
     setCompressedPercentage(Math.round(value * 100));
     setFileSize(convertSizeToKB(result.size));
@@ -72,6 +74,25 @@ const ImageEditor: FC<Props> = ({ route, navigation }): JSX.Element => {
   const handleSlidingComplete = (value: number) => {
     console.log(value);
     setCompressValue(value);
+  };
+
+  const handleSave = async () => {
+    try {
+      const tempCompressValue = Math.floor(compressValue * 100);
+      const fileName = "pp-" + Date.now();
+      const imageUri = compressedImage.split(imagePrefix)[1];
+      const result = await fsModule.saveImageToDevice(
+        imageUri,
+        fileName,
+        tempCompressValue
+      );
+      if (result === "Saved") {
+        setSaveLoading(true);
+      }
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -103,7 +124,7 @@ const ImageEditor: FC<Props> = ({ route, navigation }): JSX.Element => {
     setTimeout(() => {
       setCompressValue(1);
       setCompressedPercentage(100);
-      setCompressedImage(null);
+      setCompressedImage("");
     }, 0);
   };
 
@@ -126,10 +147,18 @@ const ImageEditor: FC<Props> = ({ route, navigation }): JSX.Element => {
   return (
     <View style={styles.container}>
       <Background />
-      <Header />
+      <Header onSavePress={handleSave} />
       <View style={styles.imageContainer}>
         <SelectedImage uri={compressedImage || selectedImage}>
-          {loading && <ImageLoader />}
+          {(loading || saveLoading) && (
+            <>
+              <ImageLoader loading={loading} />
+              <DoneLoader
+                loading={saveLoading}
+                onAnimationFinish={() => setSaveLoading(false)}
+              />
+            </>
+          )}
         </SelectedImage>
       </View>
       <EditorTools

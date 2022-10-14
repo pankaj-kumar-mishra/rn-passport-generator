@@ -6,6 +6,7 @@ import EditorTools from "./EditorTools";
 import SelectorButton from "./SelectorButton";
 import ConfirmModal from "./ConfirmModal";
 import ImageLoader from "./ImageLoader";
+import DoneLoader from "./DoneLoader";
 
 export {
   LargeIconButton,
@@ -17,4 +18,5 @@ export {
   SelectorButton,
   ConfirmModal,
   ImageLoader,
+  DoneLoader,
 };

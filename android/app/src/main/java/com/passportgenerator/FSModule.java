@@ -3,6 +3,7 @@ package com.passportgenerator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -48,25 +49,28 @@ public class FSModule extends ReactContextBaseJavaModule {
     }
 
     //  Image functionality functions
+
+    //  Get Image Size
     @ReactMethod
     public void getImageSize(String uri, Promise promise) {
         File file = new File(uri);
-//        long size = file.length();
+//      long size = file.length();
         // here we converting string to integer using "(int)"
         int size = (int) file.length();
         promise.resolve(size);
     }
 
+    //  Compress Image and return new Image uri and it's size
     @ReactMethod
     public void compressImage(String imageUri, int compressValue, Promise promise) {
         try {
-//        Set output directory to save compressed image
+//          Set output directory to save compressed image
             File outputDir = context.getCacheDir();
-//        EX passport_112313.jpg
+//          EX passport_112313.jpg
             File outputFile = File.createTempFile("passport_", ".jpg", outputDir);
             fos = new FileOutputStream(outputFile);
 
-//            Create a bitmap and save it as cache
+//          Create a bitmap and save it as cache
             String filePath = new File(imageUri).getAbsolutePath();
             Bitmap bitmap = BitmapFactory.decodeFile(filePath);
             bitmap.compress(Bitmap.CompressFormat.JPEG, compressValue, fos);
@@ -82,10 +86,37 @@ public class FSModule extends ReactContextBaseJavaModule {
             result.putInt("size", compressedSize);
 //          using the above .put we can create any object or array
 
+//          close FileOutputStream
+            fos.close();
+
             promise.resolve(result);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
+    }
+
+    //  Save image to Device Storage
+    @ReactMethod
+    public void saveImageToDevice(String imageUri, String imageName, int compressValue, Promise promise) {
+        try {
+//          get the user's public directory for images
+            File publicImgDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+//          create a folder
+            publicImgDir = new File(publicImgDir+"/Passport Photos");
+            if (!publicImgDir.exists()) {
+                publicImgDir.mkdir();
+            }
+            fos = new FileOutputStream(publicImgDir + "/" + imageName + ".jpg");
+
+//          compressed the file and saved it in cache
+            String filePath = new File(imageUri).getAbsolutePath();
+            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, compressValue, fos);
 
 //          close FileOutputStream
             fos.close();
+
+            promise.resolve("Saved");
         } catch (Exception e) {
             promise.reject(e);
         }
