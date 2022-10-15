@@ -69,18 +69,23 @@ const ImageEditor: FC<Props> = ({ route, navigation }): JSX.Element => {
   };
 
   const handleImageCompress = async (value: number) => {
-    setLoading(true);
-    const tempCompressValue = Math.floor(value * 100);
-    const uri = selectedImage.split(imagePrefix)[1];
-    const result = await fsModule.compressImage(uri, tempCompressValue);
-    // console.log(result);
-    setCompressedPercentage(Math.round(value * 100));
-    setFileSize(convertSizeToKB(result.size));
-    setCompressedImage(imagePrefix + result.uri);
+    try {
+      setLoading(true);
+      const tempCompressValue = Math.floor(value * 100);
+      const uri = selectedImage.split(imagePrefix)[1];
+      const result = await fsModule.compressImage(uri, tempCompressValue);
+      // console.log(result);
+      setCompressedPercentage(Math.round(value * 100));
+      setFileSize(convertSizeToKB(result.size));
+      setCompressedImage(imagePrefix + result.uri);
 
-    setTimeout(() => {
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
+    } catch (error) {
       setLoading(false);
-    }, 500);
+      console.log(error);
+    }
   };
 
   const handleSlidingComplete = (value: number) => {
