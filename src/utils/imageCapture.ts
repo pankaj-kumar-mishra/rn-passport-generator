@@ -1,6 +1,12 @@
 import { Alert, PermissionsAndroid, Platform } from "react-native";
 import ImagePicker from "react-native-image-crop-picker";
 
+const checkCameraPermission = async () => {
+  return await PermissionsAndroid.request(
+    PermissionsAndroid.PERMISSIONS.CAMERA
+  );
+};
+
 // https://reactnative.dev/docs/permissionsandroid
 const requestCameraPermission = async (): Promise<void> => {
   try {
@@ -17,16 +23,16 @@ const requestCameraPermission = async (): Promise<void> => {
       }
     );
     const { NEVER_ASK_AGAIN, DENIED, GRANTED } = PermissionsAndroid.RESULTS;
-    if (granted === NEVER_ASK_AGAIN)
-      return Alert.alert(
-        "Failed to open camera",
-        "It looks like you disabled the camera permission for this app!. Please change the setting first."
-      );
-    if (granted === DENIED)
-      return Alert.alert(
-        "Failed to open camera",
-        "Sorry but to use this feature, you have to accept the CAMERA PERMISSION!."
-      );
+    // if (granted === NEVER_ASK_AGAIN)
+    //   return Alert.alert(
+    //     "Failed to open camera",
+    //     "It looks like you disabled the camera permission for this app!. Please change the setting first."
+    //   );
+    // if (granted === DENIED)
+    //   return Alert.alert(
+    //     "Failed to open camera",
+    //     "Sorry but to use this feature, you have to accept the CAMERA PERMISSION!."
+    //   );
 
     if (granted === GRANTED) {
       console.log("You can use the camera");
@@ -75,6 +81,7 @@ const selectAndCropImageFromDevice = async (
 };
 
 export {
+  checkCameraPermission,
   requestCameraPermission,
   selectAndCropImageFromCamera,
   selectAndCropImageFromDevice,

@@ -3,18 +3,24 @@ import { StyleSheet, View, Text, Modal, Pressable } from "react-native";
 
 interface Props {
   visible: boolean;
-  title: string;
+  isDanger?: boolean;
+  title?: string;
   message: string;
+  cancelTitle?: string;
+  confirmTitle?: string;
   onCancelPress: () => void;
-  onDiscardPress: () => void;
+  onConfirmPress: () => void;
 }
 
 const ConfirmModal: FC<Props> = ({
   visible,
-  title,
+  isDanger,
+  title = "Are you sure?",
   message,
+  cancelTitle = "Cancel",
+  confirmTitle = "Okay",
   onCancelPress,
-  onDiscardPress,
+  onConfirmPress,
 }): JSX.Element => {
   return (
     <Modal visible={visible} transparent>
@@ -29,13 +35,16 @@ const ConfirmModal: FC<Props> = ({
               onPress={onCancelPress}
               style={[styles.btnCommon, styles.btnCancel]}
             >
-              <Text>Cancel</Text>
+              <Text>{cancelTitle}</Text>
             </Pressable>
             <Pressable
-              onPress={onDiscardPress}
-              style={[styles.btnCommon, styles.btnDiscard]}
+              onPress={onConfirmPress}
+              style={[
+                styles.btnCommon,
+                { backgroundColor: isDanger ? "#F53649" : "#6C9ADE" },
+              ]}
             >
-              <Text style={{ color: "#fff" }}>Discard</Text>
+              <Text style={{ color: "#fff" }}>{confirmTitle}</Text>
             </Pressable>
           </View>
         </View>
@@ -84,9 +93,6 @@ const styles = StyleSheet.create({
   btnCancel: {
     borderWidth: 1.5,
     borderColor: "#6C9ADE",
-  },
-  btnDiscard: {
-    backgroundColor: "#F53649",
   },
 });
 
