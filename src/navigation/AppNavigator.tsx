@@ -6,6 +6,7 @@ import {
 } from "@react-navigation/native";
 // import { createStackNavigator } from "@react-navigation/stack";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import RNBootSplash from "react-native-bootsplash";
 
 import { Home, ImageEditor, ImageEditorBugFix, NMdemo } from "../screens";
 
@@ -34,8 +35,12 @@ const CUSTOM_THEME: Theme = {
 };
 
 const AppNavigator: FC<Props> = (): JSX.Element => {
+  const handleHideSplash = () => {
+    RNBootSplash.hide({ fade: true });
+  };
+
   return (
-    <NavigationContainer theme={CUSTOM_THEME}>
+    <NavigationContainer theme={CUSTOM_THEME} onReady={handleHideSplash}>
       <Stack.Navigator
         initialRouteName="Home"
         screenOptions={{ headerShown: false }}
