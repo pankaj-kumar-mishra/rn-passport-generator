@@ -1,6 +1,6 @@
 import { RouteProp, NavigationProp, EventArg } from "@react-navigation/native";
 import { FC, useEffect, useState, useRef } from "react";
-import { StyleSheet, View } from "react-native";
+import { Linking, StyleSheet, View } from "react-native";
 import {
   Background,
   ConfirmModal,
@@ -12,6 +12,7 @@ import {
 } from "../components";
 import { AppStackParamList } from "../navigation/AppNavigator";
 import fsModule from "../services/fsModule";
+import { requestWritePermission } from "../utils/FileReadWrite";
 import { convertSizeToKB } from "../utils/helper";
 import {
   selectAndCropImageFromCamera,
@@ -45,6 +46,17 @@ const ImageEditor: FC<Props> = ({ route, navigation }): JSX.Element => {
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
 
+  const [showPermissionAlert, setShowPermissionAlert] = useState(false);
+
+  const handleCancelPermissionModal = () => {
+    setShowPermissionAlert(false);
+  };
+
+  const handleConfirmPermissionModal = () => {
+    handleCancelPermissionModal();
+    Linking.openSettings();
+  };
+
   const getImageUriSize = async () => {
     try {
       const uri = selectedImage.split(imagePrefix)[1];
@@ -68,7 +80,7 @@ const ImageEditor: FC<Props> = ({ route, navigation }): JSX.Element => {
 
     setTimeout(() => {
       setLoading(false);
-    }, 600);
+    }, 500);
   };
 
   const handleSlidingComplete = (value: number) => {
@@ -78,6 +90,12 @@ const ImageEditor: FC<Props> = ({ route, navigation }): JSX.Element => {
 
   const handleSave = async () => {
     try {
+      const isWrite = await requestWritePermission();
+      console.log(isWrite);
+      if (!isWrite) {
+        setShowPermissionAlert(true);
+        return;
+      }
       const tempCompressValue = Math.floor(compressValue * 100);
       const fileName = "pp-" + Date.now();
       const imageUri = compressedImage.split(imagePrefix)[1];
@@ -87,7 +105,9 @@ const ImageEditor: FC<Props> = ({ route, navigation }): JSX.Element => {
         tempCompressValue
       );
       if (result === "Saved") {
-        setSaveLoading(true);
+        setTimeout(() => {
+          setSaveLoading(true);
+        }, 500);
       }
       console.log(result);
     } catch (error) {
@@ -178,6 +198,16 @@ const ImageEditor: FC<Props> = ({ route, navigation }): JSX.Element => {
         confirmTitle="Discard"
         onCancelPress={handleCancelModal}
         onConfirmPress={handleDiscardModal}
+      />
+
+      {/* Confirm again for File write permission */}
+      <ConfirmModal
+        visible={showPermissionAlert}
+        title="Required Write Permission!"
+        message="This app need file write permission to save file, so you have to accept the permission!"
+        confirmTitle="Open Settings"
+        onCancelPress={handleCancelPermissionModal}
+        onConfirmPress={handleConfirmPermissionModal}
       />
     </View>
   );
